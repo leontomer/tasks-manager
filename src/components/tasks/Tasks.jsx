@@ -1,0 +1,47 @@
+import React,{useState, useContext} from 'react'
+import CreateTasks from './CreateTasks';
+import "./Tasks.scss";
+import { GlobalContext } from '../../context/GlobalContext';
+import { Tooltip } from '@mui/material';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import {deleteTask} from '../../api/TasksActions';
+import Alert from '@mui/material/Alert';
+
+export default function Tasks() {
+    const { tasks, setTasks } = useContext(GlobalContext);
+    const [deleteError, setDeleteError] = useState(false);
+    const handleDeleteTask = async (taskId) => {
+        const deleteResult = await deleteTask(taskId);
+        if(deleteResult.data.acknowledged){
+            setTasks(tasks.filter(task=>task._id!==taskId));
+        }
+        else
+            {
+                setDeleteError(true);
+                setTimeout(() => {
+                    setDeleteError(false);
+                  }, 5000);
+            }
+    }
+  return (
+    <div>
+        <span className='header'>
+            <h1>Tasks Manager</h1>
+        </span>
+        <div className='general-tasks-container'>
+            <div className='tasks-container'>
+                {tasks.map((task)=>(
+                   <div key={task._id} style={{display: "flex", justifyContent: "space-between"}}>
+                    <Tooltip  title={task.taskDetails || ''}>
+                         <div  style={{marginTop: "10px"}}>{task.taskName} </div>
+                    </Tooltip>
+                    <DeleteOutlinedIcon  style={{cursor: "pointer"}} onClick={()=>handleDeleteTask(task._id)}/>
+                    </div>
+                ))}
+            </div>
+        <CreateTasks />
+        </div>
+        {deleteError && <div style={{display:"flex", alignItems: "center", justifyContent: "center"}}><Alert severity="error">Delete task failed</Alert> </div>}
+    </div>
+  )
+}
