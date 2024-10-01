@@ -8,8 +8,8 @@ import {deleteTask} from '../../api/TasksActions';
 import Alert from '@mui/material/Alert';
 
 export default function Tasks() {
-    const { tasks, setTasks, setDeleteError, setEditingTask, editingTask } = useContext(GlobalContext);
-    const [deleteErrorLocal, setDeleteErrorLocal] = useState(false);
+    const { tasks, setTasks, setEditingTask } = useContext(GlobalContext);
+    const [deleteError, setDeleteError] = useState(false);
     const handleDeleteTask = async (taskId) => {
         const deleteResult = await deleteTask(taskId);
         if(deleteResult.data.acknowledged){
@@ -17,9 +17,9 @@ export default function Tasks() {
         }
         else
             {
-                setDeleteErrorLocal(true);
+                setDeleteError(true);
                 setTimeout(() => {
-                    setDeleteErrorLocal(false);
+                    setDeleteError(false);
                   }, 5000);
             }
     }
@@ -47,7 +47,7 @@ export default function Tasks() {
             </div>
         <CreateTasks />
         </div>
-        {deleteErrorLocal && <div style={{display:"flex", alignItems: "center", justifyContent: "center"}}><Alert severity="error">Delete task failed</Alert> </div>}
+        {deleteError && <div style={{display:"flex", alignItems: "center", justifyContent: "center"}}><Alert severity="error">Delete task failed</Alert> </div>}
     </div>
   )
 }

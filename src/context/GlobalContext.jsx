@@ -8,7 +8,6 @@ export const GlobalContext = createContext();
 export const GlobalProvider = ({ children }) => {
   // Define the global state
   const [tasks, setTasks] = useState([]);
-  const [deleteError, setDeleteError] = useState(false);
   const [editingTask, setEditingTask] = useState(null); // New state for editing
 
   useEffect(() => {
@@ -29,8 +28,6 @@ export const GlobalProvider = ({ children }) => {
       value={{
         tasks,
         setTasks,
-        deleteError,
-        setDeleteError,
         editingTask,
         setEditingTask, // Provide setter
       }}
