@@ -8,8 +8,8 @@ import {deleteTask} from '../../api/TasksActions';
 import Alert from '@mui/material/Alert';
 
 export default function Tasks() {
-    const { tasks, setTasks } = useContext(GlobalContext);
-    const [deleteError, setDeleteError] = useState(false);
+    const { tasks, setTasks, setDeleteError, setEditingTask, editingTask } = useContext(GlobalContext);
+    const [deleteErrorLocal, setDeleteErrorLocal] = useState(false);
     const handleDeleteTask = async (taskId) => {
         const deleteResult = await deleteTask(taskId);
         if(deleteResult.data.acknowledged){
@@ -17,23 +17,29 @@ export default function Tasks() {
         }
         else
             {
-                setDeleteError(true);
+                setDeleteErrorLocal(true);
                 setTimeout(() => {
-                    setDeleteError(false);
+                    setDeleteErrorLocal(false);
                   }, 5000);
             }
     }
+
+    const handleDoubleClick = (task) => {
+        setEditingTask(task);
+    };
+
+
   return (
-    <div>
+    <div className='tasks-section'>
         <span className='header'>
             <h1>Tasks Manager</h1>
         </span>
         <div className='general-tasks-container'>
             <div className='tasks-container'>
                 {tasks.map((task)=>(
-                   <div key={task._id} style={{display: "flex", justifyContent: "space-between"}}>
+                   <div key={task._id} style={{display: "flex", justifyContent: "space-between", cursor: "pointer"}} onDoubleClick={() => handleDoubleClick(task)}>
                     <Tooltip  title={task.taskDetails || ''}>
-                         <div  style={{marginTop: "10px"}}>{task.taskName} </div>
+                         <div  style={{marginTop: "10px"}} >{task.taskName} </div>
                     </Tooltip>
                     <DeleteOutlinedIcon  style={{cursor: "pointer"}} onClick={()=>handleDeleteTask(task._id)}/>
                     </div>
@@ -41,7 +47,7 @@ export default function Tasks() {
             </div>
         <CreateTasks />
         </div>
-        {deleteError && <div style={{display:"flex", alignItems: "center", justifyContent: "center"}}><Alert severity="error">Delete task failed</Alert> </div>}
+        {deleteErrorLocal && <div style={{display:"flex", alignItems: "center", justifyContent: "center"}}><Alert severity="error">Delete task failed</Alert> </div>}
     </div>
   )
 }

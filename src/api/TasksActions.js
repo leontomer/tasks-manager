@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const saveTask = async (task) => {
-  return await axios.post("/tasks/saveTask", task);
+export const createTask = async (task) => {
+  return await axios.post("/tasks/createTask", task);
 };
 
 export const getTasks = async () => {
@@ -10,4 +10,8 @@ export const getTasks = async () => {
 
 export const deleteTask = async (taskId) => {
   return await axios.delete(`/tasks/deleteTask/${taskId}`);
+};
+
+export const editTask = async (task) => {
+  return await axios.put("/tasks/editTask", task);
 };

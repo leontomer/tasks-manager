@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const task = require("../../models/tasks.model");
 
-router.post("/saveTask", async (req, res) => {
+router.post("/createTask", async (req, res) => {
   try {
     const { taskName, taskDetails } = req.body;
     const newCreatedTask = new task({
@@ -11,6 +11,23 @@ router.post("/saveTask", async (req, res) => {
     });
     await newCreatedTask.save();
     res.status(200).send(newCreatedTask);
+  } catch (error) {
+    res.status(400).json("Error: " + error);
+  }
+});
+
+router.put("/editTask", async (req, res) => {
+  try {
+    const { _id, taskName, taskDetails } = req.body;
+    const updatedTask = await task.findByIdAndUpdate(
+      _id,
+      { taskName, taskDetails },
+      { new: true }
+    );
+    if (!updatedTask) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    res.status(200).json(updatedTask);
   } catch (error) {
     res.status(400).json("Error: " + error);
   }
