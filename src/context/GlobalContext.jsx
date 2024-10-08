@@ -18,18 +18,13 @@ export const GlobalProvider = ({ children }) => {
     fetchTasks();
   }, []);
 
-  // Define any functions that modify the state
-  const addTask = (task) => {
-    setTasks([...tasks, task]);
-  };
-
   return (
     <GlobalContext.Provider
       value={{
         tasks,
         setTasks,
         editingTask,
-        setEditingTask, // Provide setter
+        setEditingTask,
       }}
     >
       {children}
